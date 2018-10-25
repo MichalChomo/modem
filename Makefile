@@ -2,14 +2,14 @@ CC=g++
 CFLAGS=-std=c++11 -Wall -pedantic -O2 -no-pie
 LIBS=-lm
 
-all: bms2A bms2B
+all: bms1A bms1B
 
 
-bms2A: bms2A.cpp
+bms1A: bms1A.cpp
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@ libsndfile.a
 
-bms2B: bms2B.cpp
+bms1B: bms1B.cpp
 	$(CC) $(CFLAGS) $(LIBS) $^ -o $@ libsndfile.a
 
 clean:
-	rm -f *.o bms2A bms2B
+	rm -f *.o bms1A bms1B
