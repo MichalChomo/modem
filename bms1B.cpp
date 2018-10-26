@@ -8,27 +8,24 @@
 #include "sndfile.hh"
 
 
-using namespace std;
-
 /*
  * 
  */
-int main(int argc, char** argv) {
-    
+int main(int argc, char **argv) {
+
     SndfileHandle inputFile;
     int sampleRate;
     int *buffer;
-    
+
     inputFile = SndfileHandle("sine.waw");
-    
+
     sampleRate = inputFile.samplerate();
-    
+
     buffer = new int[sampleRate];
 
     inputFile.read(buffer, sampleRate);
-    
-    
-    delete [] buffer;
+
+
+    delete[] buffer;
     return EXIT_SUCCESS;
 }
-
