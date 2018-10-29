@@ -3,42 +3,34 @@
  */
 
 #include <cstdlib>
-#include <math.h>
 #include <istream>
 #include <fstream>
 #include <iostream>
 
-#include "constants.h"
 #include "sndfile.hh"
 
-#include "FileNameHelper.h"
+#include "filename_helper.h"
+#include "amplitude_modulation.h"
 
 /*
  *
  */
 int main(int argc, char **argv) {
 
+    AmplitudeModulation amplitudeModulation;
     SndfileHandle outputFile;
 
     std::string inputFileName(argv[1]);
-    std::string outputFileName(FileNameHelper::getFileNameWithoutExtension(inputFileName));
-
     std::ifstream inputFileStream(inputFileName);
 
-    int *buffer = new int[SAMPLE_RATE];
-
-    for (int i = 0; i < SAMPLE_RATE; i++) {
-        buffer[i] = AMPLITUDE * sin(FREQ * 2 * i * M_PI);
-        std::cout << AMPLITUDE * sin(FREQ * 2 * i * M_PI) << " ";
-    }
-    std::cout << std::endl;
-
+    std::string outputFileName(FilenameHelper::getFilenameWithoutExtension(inputFileName));
     outputFile = SndfileHandle(
-            FileNameHelper::addExtensionToFileName(outputFileName, FileNameHelper::FileExtension::WAV),
+            FilenameHelper::addExtensionToFilename(outputFileName, FilenameHelper::FileExtension::WAV),
             SFM_WRITE, FORMAT, CHANELS, SAMPLE_RATE);
 
-    outputFile.write(buffer, SAMPLE_RATE);
+    outputFile.write(amplitudeModulation.modulate(inputFileStream), SAMPLE_RATE);
 
-    delete[] buffer;
+    inputFileStream.close();
+
     return EXIT_SUCCESS;
 }

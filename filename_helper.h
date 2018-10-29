@@ -8,7 +8,7 @@
 
 #include <string>
 
-class FileNameHelper {
+class FilenameHelper {
 public:
 
     enum FileExtension {
@@ -17,12 +17,12 @@ public:
 
     /**
      * Removes file extension from the filename. If it doesn't have an extension, returns it with no change.
-     * @param fileName
+     * @param filename
      * @return Filename without extension.
      */
-    static std::string getFileNameWithoutExtension(std::string &fileName);
+    static std::string getFilenameWithoutExtension(std::string &filename);
 
-    static std::string addExtensionToFileName(std::string &fileName, FileExtension fileExtension);
+    static std::string addExtensionToFilename(std::string &filename, FileExtension fileExtension);
 
 private:
     static std::string getFileExtensionString(FileExtension fileExtension);

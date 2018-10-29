@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++11 -Wall -pedantic -O2 -no-pie
 LIBS=-lm
-OBJS=FileNameHelper.o
+OBJS=filename_helper.o amplitude_modulation.o
 
 all: bms1A bms1B
 
