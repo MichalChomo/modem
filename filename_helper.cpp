@@ -13,7 +13,7 @@ std::string FilenameHelper::getFilenameWithoutExtension(std::string &filename) {
 }
 
 std::string
-FilenameHelper::addExtensionToFilename(std::string &filename, FilenameHelper::FileExtension fileExtension) {
+FilenameHelper::addExtensionToFilename(std::string filename, FilenameHelper::FileExtension fileExtension) {
     return filename.append(".").append(getFileExtensionString(fileExtension));
 }
 

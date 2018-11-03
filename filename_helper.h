@@ -22,7 +22,7 @@ public:
      */
     static std::string getFilenameWithoutExtension(std::string &filename);
 
-    static std::string addExtensionToFilename(std::string &filename, FileExtension fileExtension);
+    static std::string addExtensionToFilename(std::string filename, FileExtension fileExtension);
 
 private:
     static std::string getFileExtensionString(FileExtension fileExtension);
