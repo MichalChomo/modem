@@ -2,22 +2,26 @@
 // Created by michal on 29.10.2018.
 //
 
-#ifndef MODEM_AMPLITUDEMODULATION_H
-#define MODEM_AMPLITUDEMODULATION_H
+#ifndef MODEM_AMPLITUDESHIFTKEYING_H
+#define MODEM_AMPLITUDESHIFTKEYING_H
 
 #include <math.h>
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <map>
 #include "constants.h"
 #include "sndfile.hh"
 
 
-class AmplitudeModulation {
+class AmplitudeShiftKeying {
 
 public:
 
-    AmplitudeModulation();
+    AmplitudeShiftKeying();
+
+    AmplitudeShiftKeying(unsigned int sampleRate);
 
     /**
      * Read bits from the input file and write a discrete time signal representing the bits to the output file.
@@ -27,13 +31,23 @@ public:
      */
     bool modulate(std::ifstream &inputFileStream, SndfileHandle &outputFile);
 
+    bool demodulate(SndfileHandle &inputFile, std::ofstream &outputFileStream);
+
 private:
     enum Dibit {
         D00, D01, D10, D11, ERROR
     };
 
-    int samplesPerPeriod;
-    int samplesPerSymbol;
+    std::map<Dibit, std::string> dibitToStringMap {
+        {Dibit::D00, "00"},
+        {Dibit::D01, "01"},
+        {Dibit::D10, "10"},
+        {Dibit::D11, "11"}
+    };
+
+    unsigned int samplesPerPeriod;
+    unsigned int samplesPerSymbol;
+    unsigned int sampleRate;
 
     /**
      * Returns Dibit enum value corresponding to the given characters.
@@ -49,4 +63,4 @@ private:
 };
 
 
-#endif //MODEM_AMPLITUDEMODULATION_H
+#endif //MODEM_AMPLITUDESHIFTKEYING_H
