@@ -26,11 +26,14 @@ int main(int argc, char **argv) {
     std::string outputFileName(FilenameHelper::getFilenameWithoutExtension(inputFileName));
     outputFile = SndfileHandle(
             FilenameHelper::addExtensionToFilename(outputFileName, FilenameHelper::FileExtension::WAV),
-            SFM_WRITE, FORMAT, CHANELS, SAMPLE_RATE);
+            SFM_WRITE, FORMAT, CHANNELS, SAMPLE_RATE);
 
-    outputFile.write(amplitudeModulation.modulate(inputFileStream), SAMPLE_RATE);
-
+    bool success = amplitudeModulation.modulate(inputFileStream, outputFile);
     inputFileStream.close();
 
-    return EXIT_SUCCESS;
+    if (!success) {
+        std::remove(outputFileName.c_str());
+        return 1;
+    }
+    return 0;
 }

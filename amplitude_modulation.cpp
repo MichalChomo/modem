@@ -3,22 +3,32 @@
 //
 
 #include "amplitude_modulation.h"
+#include "sndfile.hh"
 
-int *AmplitudeModulation::modulate(std::ifstream &inputFileStream) {
+AmplitudeModulation::AmplitudeModulation() {
+    samplesPerPeriod = static_cast<int>(SAMPLE_RATE / FREQ);
+    samplesPerSymbol = samplesPerPeriod;
+}
+
+bool AmplitudeModulation::modulate(std::ifstream &inputFileStream, SndfileHandle &outputFile) {
     std::streamsize size = 2;
-    int *buffer = new int[SAMPLE_RATE];
+    std::vector<int> syncSignal = getSyncSignal();
+    outputFile.write(syncSignal.data(), syncSignal.size());
     while (!inputFileStream.eof() && !inputFileStream.fail()) {
-        char dibit[2];
-        inputFileStream.read(dibit, size);
+        char dibitChars[2];
+        inputFileStream.read(dibitChars, size);
         if (inputFileStream.eof() || inputFileStream.fail()) {
             break;
         }
-        std::cout << "dibit: " << getDibitFromTwoChars(dibit) << std::endl;
-        for (int i = 0; i < SAMPLE_RATE; i++) {
-            buffer[i] = AMPLITUDE * sin(FREQ * 2 * i * M_PI);
+        Dibit dibit = getDibitFromTwoChars(dibitChars);
+        if (dibit == Dibit::ERROR) {
+            std::cerr << "Incorrect character found, exiting." << std::endl;
+            return false;
         }
+        std::vector<int> signal = getSignalForDibit(dibit);
+        outputFile.write(signal.data(), signal.size());
     }
-    return buffer;
+    return true;
 }
 
 AmplitudeModulation::Dibit AmplitudeModulation::getDibitFromTwoChars(const char *dibitChars) {
@@ -36,4 +46,30 @@ AmplitudeModulation::Dibit AmplitudeModulation::getDibitFromTwoChars(const char 
         }
     }
     return Dibit::ERROR;
+}
+
+std::vector<int> AmplitudeModulation::getSignalForDibit(AmplitudeModulation::Dibit dibit) {
+    std::vector<int> signal;
+    signal.reserve(samplesPerSymbol);
+    double amplitude = AMPLITUDE * dibit / 3;
+
+    for (double i = 0; i < samplesPerSymbol; i++) {
+        i = static_cast<int>(i) % samplesPerPeriod;
+        signal.push_back(amplitude * sin((i / samplesPerPeriod) * 2 * M_PI));
+    }
+
+    return signal;
+}
+
+std::vector<int> AmplitudeModulation::getSyncSignal() {
+    std::vector<int> syncSignal;
+    const char *syncSignalChar = SYNC_STRING.c_str();
+    for (unsigned int i = 0; i < SYNC_STRING.size(); i += 2) {
+        char dibit[2];
+        dibit[0] = syncSignalChar[i];
+        dibit[1] = syncSignalChar[i+1];
+        std::vector<int> dibitSignal = getSignalForDibit(getDibitFromTwoChars(dibit));
+        syncSignal.insert(std::end(syncSignal), std::begin(dibitSignal), std::end(dibitSignal));
+    }
+    return syncSignal;
 }

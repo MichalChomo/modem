@@ -1,0 +1,29 @@
+#!/bin/bash
+# Script for generating a graph of the given WAV file.
+
+file=$(basename $1 .wav)
+
+sox $file.wav withcomments.dat
+tail -n+3 withcomments.dat > $file.dat
+rm withcomments.dat
+
+cat > $file.gpi <<- EOM
+set term png size 800,600
+set output "$file.png"
+set yr [-1:1]
+set xr [:0.03]
+unset key
+unset tics
+unset border
+set lmargin 0             
+set rmargin 0
+set tmargin 0
+set bmargin 0
+set obj 1 rectangle behind from screen 0,0 to screen 1,1
+set obj 1 fillstyle solid 1.0 fillcolor rgbcolor "#222222"
+plot "$file.dat" with lines lt rgb 'white'
+EOM
+
+gnuplot $file.gpi
+rm $file.gpi
+rm $file.dat
