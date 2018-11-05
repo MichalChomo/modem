@@ -8,19 +8,11 @@ tail -n+3 withcomments.dat > $file.dat
 rm withcomments.dat
 
 cat > $file.gpi <<- EOM
-set term png size 800,600
-set output "$file.png"
-set yr [-1:1]
-unset key
-unset tics
-unset border
-set lmargin 0             
-set rmargin 0
-set tmargin 0
-set bmargin 0
-set obj 1 rectangle behind from screen 0,0 to screen 1,1
-set obj 1 fillstyle solid 1.0 fillcolor rgbcolor "#222222"
-plot "$file.dat" with lines lt rgb 'white'
+set term jpeg size 800,600
+set output "$file.jpeg"
+set grid ytics lt 0 lw 1 lc rgb "#bbbbbb"
+set grid xtics lt 0 lw 1 lc rgb "#bbbbbb"
+plot "$file.dat" with lines lt rgb 'red'
 EOM
 
 gnuplot $file.gpi

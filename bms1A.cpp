@@ -1,7 +1,3 @@
-/*
- * File:   bms1A.cpp
- */
-
 #include <cstdlib>
 #include <istream>
 #include <fstream>
@@ -22,6 +18,10 @@ int main(int argc, char **argv) {
 
     std::string inputFileName(argv[1]);
     std::ifstream inputFileStream(inputFileName);
+    if (inputFileStream.fail()) {
+        std::cerr << "Unable to open the input file." << std::endl;
+        return EXIT_FAILURE;
+    }
 
     std::string outputFileName(FilenameHelper::addExtensionToFilename(
             FilenameHelper::getFilenameWithoutExtension(inputFileName), FilenameHelper::FileExtension::WAV));

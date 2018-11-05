@@ -4,4 +4,4 @@ bms1B
 .idea
 CMakeLists.txt
 cmake-build-debug
-*.png
+*.jpeg
